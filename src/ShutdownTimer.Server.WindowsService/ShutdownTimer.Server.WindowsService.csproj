@@ -31,4 +31,10 @@
 	  <Folder Include="Properties\PublishProfiles\" />
 	</ItemGroup>
 
+	<ItemGroup>
+	  <Content Update="Properties\launchSettings.json">
+	    <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+	  </Content>
+	</ItemGroup>
+
 </Project>
