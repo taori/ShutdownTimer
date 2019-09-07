@@ -1,0 +1,37 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+	<PropertyGroup>
+		<TargetFramework>netcoreapp2.2</TargetFramework>
+		<UserSecretsId>aspnet-ShutdownTimer.Server-82703479-1FCF-4FF8-B627-EAC25325967A</UserSecretsId>
+		<AspNetCoreHostingModel>InProcess</AspNetCoreHostingModel>
+		<RuntimeIdentifier>win7-x64</RuntimeIdentifier>
+		<SelfContained>false</SelfContained>
+		<IsTransformWebConfigDisabled>true</IsTransformWebConfigDisabled>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<None Remove="createService.ps1" />
+		<None Remove="removeService.ps1" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<Content Include="createService.ps1">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Content>
+		<Content Include="removeService.ps1">
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Content>
+	</ItemGroup>
+
+
+	<ItemGroup>
+		<PackageReference Include="Microsoft.AspNetCore.App" />
+		<PackageReference Include="Microsoft.AspNetCore.Razor.Design" Version="2.2.0" PrivateAssets="All" />
+		<PackageReference Include="Microsoft.AspNetCore.Hosting.WindowsServices" Version="2.2.0" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="2.2.6" />
+		<PackageReference Include="Microsoft.Extensions.Logging.EventLog" Version="2.2.0" />
+		<PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.2.3" />
+		<PackageReference Include="NSwag.AspNetCore" Version="13.0.6" />
+	</ItemGroup>
+
+</Project>

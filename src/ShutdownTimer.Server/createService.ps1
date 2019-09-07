@@ -1,6 +1,6 @@
 ﻿$serviceName = "ShutdownTimer.Server"
 $exeDirectory = $PSScriptRoot
-$exePath = "$PSScriptRoot\ShutdownTimer.Server.WindowsService.exe"
+$exePath = "$PSScriptRoot\ShutdownTimer.Server.exe"
 $user = Get-Credential "MSS-Laptop\SelfMadeServers"
 $acl = Get-Acl $exeDirectory
 $aclRuleArgs = $user.UserName, "Read,Write,ReadAndExecute", "ContainerInherit,ObjectInherit", "None", "Allow"
