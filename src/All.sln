@@ -3,9 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29230.47
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ShutdownTimer.Server.WindowsService", "ShutdownTimer.Server.WindowsService\ShutdownTimer.Server.WindowsService.csproj", "{3C10AB33-C899-4692-B544-E7DA93D78D0D}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ShutdownTimer.Server", "ShutdownTimer.Server\ShutdownTimer.Server.csproj", "{05D1B82C-7645-4AF6-A0A7-CDCCCADFC31B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ShutdownTimer.Server", "ShutdownTimer.Server\ShutdownTimer.Server.csproj", "{05D1B82C-7645-4AF6-A0A7-CDCCCADFC31B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -13,10 +11,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{3C10AB33-C899-4692-B544-E7DA93D78D0D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{3C10AB33-C899-4692-B544-E7DA93D78D0D}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{3C10AB33-C899-4692-B544-E7DA93D78D0D}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{3C10AB33-C899-4692-B544-E7DA93D78D0D}.Release|Any CPU.Build.0 = Release|Any CPU
 		{05D1B82C-7645-4AF6-A0A7-CDCCCADFC31B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{05D1B82C-7645-4AF6-A0A7-CDCCCADFC31B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{05D1B82C-7645-4AF6-A0A7-CDCCCADFC31B}.Release|Any CPU.ActiveCfg = Release|Any CPU

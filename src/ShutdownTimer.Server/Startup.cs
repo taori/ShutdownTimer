@@ -18,12 +18,14 @@ namespace ShutdownTimer.Server
 {
 	public class Startup
 	{
-		public Startup(IConfiguration configuration)
+		public Startup(IConfiguration configuration, IHostingEnvironment hostingEnvironment)
 		{
 			Configuration = configuration;
+			HostingEnvironment = hostingEnvironment;
 		}
 
 		public IConfiguration Configuration { get; }
+		public IHostingEnvironment HostingEnvironment { get; }
 
 		// This method gets called by the runtime. Use this method to add services to the container.
 		public void ConfigureServices(IServiceCollection services)
@@ -35,9 +37,19 @@ namespace ShutdownTimer.Server
 				options.MinimumSameSitePolicy = SameSiteMode.None;
 			});
 
-			services.AddDbContext<ApplicationDbContext>(options =>
-				options.UseSqlServer(
-					Configuration.GetConnectionString("ApplicationContextConnection")));
+			if (HostingEnvironment.IsDevelopment())
+			{
+				services.AddDbContext<ApplicationDbContext>(options =>
+					options.UseSqlServer(
+						Configuration.GetConnectionString("ApplicationContextConnection")));
+			}
+			else
+			{
+				services.AddDbContext<ApplicationDbContext>(options =>
+					options.UseSqlite(
+						Configuration.GetConnectionString("ApplicationContextConnection").Replace("%root%", HostingEnvironment.ContentRootPath)));
+			}
+
 
 			services.AddDefaultIdentity<IdentityUser>(options =>
 				{

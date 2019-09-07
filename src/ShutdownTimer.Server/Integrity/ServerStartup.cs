@@ -29,6 +29,8 @@ namespace ShutdownTimer.Server.Integrity
 
 				using (var scope = builder.ApplicationServices.CreateScope())
 				{
+					var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+					await dbContext.Database.MigrateAsync();
 					var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
 
 					await EnsureRoleExists(roleManager, WellKnownRoleNames.Administrator);

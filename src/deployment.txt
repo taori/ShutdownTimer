@@ -1,0 +1,11 @@
+prepare localdb like this:
+
+create database
+share database
+C:\Program Files\Microsoft SQL Server\130\Tools\Binn> .\SqlLocalDB.exe share v13.0 SharedDb
+
+CREATE LOGIN [MSS-Laptop\SelfMadeServers] FROM WINDOWS 
+GRANT CONNECT TO [MSS-LAPTOP\SelfMadeServers]
+
+exec sp_addrolemember 'db_owner', 'MSS-Laptop\SelfMadeServers'
+EXEC master..sp_addsrvrolemember @loginame = N'MSS-LAPTOP\SelfMadeServers', @rolename = N'sysadmin'
