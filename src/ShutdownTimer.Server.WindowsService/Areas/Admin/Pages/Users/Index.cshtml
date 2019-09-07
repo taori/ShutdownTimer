@@ -1,0 +1,9 @@
+﻿@page
+@model ShutdownTimer.Server.WindowsService.Areas.Admin.Pages.Users.IndexModel
+@{
+}
+
+@foreach (var user in Model.Users)
+{
+	<li>@user.NormalizedUserName</li>
+}

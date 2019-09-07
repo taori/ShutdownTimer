@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel;
+using System.Net.Sockets;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Hosting.WindowsServices;
 using Microsoft.Extensions.DependencyInjection;
@@ -10,6 +11,7 @@ namespace ShutdownTimer.Server.WindowsService.Extensions
 	internal class CustomWebHostService : WebHostService
 	{
 		private ILogger _logger;
+		private UdpClient _udpClient = new UdpClient();
 
 		public CustomWebHostService(IWebHost host) : base(host)
 		{
@@ -26,6 +28,8 @@ namespace ShutdownTimer.Server.WindowsService.Extensions
 		protected override void OnStarted()
 		{
 			_logger.LogInformation("OnStarted method called.");
+//			var client = new UdpClient();
+//			client.
 			base.OnStarted();
 		}
 

@@ -25,9 +25,14 @@
 		<PackageReference Include="Microsoft.AspNetCore.Hosting.WindowsServices" Version="2.2.0" />
 		<PackageReference Include="Microsoft.AspNetCore.Razor.Design" Version="2.2.0" PrivateAssets="All" />
 		<PackageReference Include="Microsoft.Extensions.Logging.EventLog" Version="2.2.0" />
+		<PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.2.3" />
+		<PackageReference Include="NSwag.AspNetCore" Version="13.0.6" />
 	</ItemGroup>
 
 	<ItemGroup>
+	  <Folder Include="Areas\Identity\Pages\" />
+	  <Folder Include="Areas\Identity\Pages\Account\" />
+	  <Folder Include="Areas\Identity\Pages\Account\Manage\" />
 	  <Folder Include="Properties\PublishProfiles\" />
 	</ItemGroup>
 

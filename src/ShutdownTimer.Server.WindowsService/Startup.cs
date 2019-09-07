@@ -5,9 +5,12 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using ShutdownTimer.Server.WindowsService.Models;
 
 namespace ShutdownTimer.Server.WindowsService
 {
@@ -30,8 +33,14 @@ namespace ShutdownTimer.Server.WindowsService
 				options.MinimumSameSitePolicy = SameSiteMode.None;
 			});
 
+			services.AddAuthentication();
+			services.AddAuthorization();
 
-			services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+			services.AddSwaggerDocument();
+
+			services.AddMvc()
+				.AddRazorPagesOptions(d => { d.AllowAreas = true; })
+				.SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 		}
 
 		// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -46,11 +55,18 @@ namespace ShutdownTimer.Server.WindowsService
 				app.UseExceptionHandler("/Home/Error");
 			}
 
+			app.UseAuthentication();
+			app.UseOpenApi();
+			app.UseSwaggerUi3();
 			app.UseStaticFiles();
 			app.UseCookiePolicy();
 
 			app.UseMvc(routes =>
 			{
+				routes.MapRoute(
+					name: "mvcAreaRoute",
+					template: "{area:exists}/{controller=Home}/{action=Index}");
+
 				routes.MapRoute(
 					name: "default",
 					template: "{controller=Home}/{action=Index}/{id?}");
