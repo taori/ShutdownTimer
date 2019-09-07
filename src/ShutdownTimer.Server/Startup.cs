@@ -38,7 +38,14 @@ namespace ShutdownTimer.Server
 			services.AddDbContext<ApplicationDbContext>(options =>
 				options.UseSqlServer(
 					Configuration.GetConnectionString("ApplicationContextConnection")));
-			services.AddDefaultIdentity<IdentityUser>()
+
+			services.AddDefaultIdentity<IdentityUser>(options =>
+				{
+					options.Password.RequireDigit = false;
+					options.Password.RequireUppercase = false;
+					options.Password.RequireNonAlphanumeric = false;
+					options.Password.RequiredLength = 4;
+				})
 				.AddRoles<IdentityRole>()
 				.AddDefaultUI(UIFramework.Bootstrap4)
 				.AddEntityFrameworkStores<ApplicationDbContext>();

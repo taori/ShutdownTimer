@@ -4,9 +4,9 @@
 		<TargetFramework>netcoreapp2.2</TargetFramework>
 		<UserSecretsId>aspnet-ShutdownTimer.Server-82703479-1FCF-4FF8-B627-EAC25325967A</UserSecretsId>
 		<AspNetCoreHostingModel>InProcess</AspNetCoreHostingModel>
-		<!-- <RuntimeIdentifier>win7-x64</RuntimeIdentifier> -->
-		<!-- <SelfContained>false</SelfContained> -->
-		<!-- <IsTransformWebConfigDisabled>true</IsTransformWebConfigDisabled> -->
+		<RuntimeIdentifier>win7-x64</RuntimeIdentifier>
+		<SelfContained>false</SelfContained>
+		<IsTransformWebConfigDisabled>true</IsTransformWebConfigDisabled>
 	</PropertyGroup>
 
 	<ItemGroup>
