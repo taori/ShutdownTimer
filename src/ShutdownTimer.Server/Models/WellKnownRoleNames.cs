@@ -1,4 +1,4 @@
-﻿namespace ShutdownTimer.Server.WindowsService.Models
+﻿namespace ShutdownTimer.Server.Models
 {
 	public class WellKnownRoleNames
 	{

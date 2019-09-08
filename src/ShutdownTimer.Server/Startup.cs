@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
@@ -9,10 +10,12 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.EntityFrameworkCore;
 using ShutdownTimer.Server.Data;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using ShutdownTimer.Server.Models;
 
 namespace ShutdownTimer.Server
 {
@@ -51,7 +54,7 @@ namespace ShutdownTimer.Server
 			}
 
 
-			services.AddDefaultIdentity<IdentityUser>(options =>
+			services.AddDefaultIdentity<ServiceUser>(options =>
 				{
 					options.Password.RequireDigit = false;
 					options.Password.RequireUppercase = false;
@@ -62,7 +65,15 @@ namespace ShutdownTimer.Server
 				.AddDefaultUI(UIFramework.Bootstrap4)
 				.AddEntityFrameworkStores<ApplicationDbContext>();
 
-			services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+			services
+				.AddMvc(options =>
+				{
+				})
+				.AddRazorPagesOptions(options =>
+				{
+					options.AllowAreas = true;
+				})
+				.SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 		}
 
 		// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

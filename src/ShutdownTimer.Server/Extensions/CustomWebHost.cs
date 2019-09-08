@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Hosting.WindowsServices;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
-namespace ShutdownTimer.Server.WindowsService.Extensions
+namespace ShutdownTimer.Server.Extensions
 {
 	[DesignerCategory("Code")]
 	internal class CustomWebHostService : WebHostService

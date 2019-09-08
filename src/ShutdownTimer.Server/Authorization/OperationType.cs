@@ -1,4 +1,4 @@
-﻿namespace ShutdownTimer.Server.WindowsService.Authorization
+﻿namespace ShutdownTimer.Server.Authorization
 {
 	public enum OperationType
 	{

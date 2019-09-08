@@ -1,15 +1,11 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Net;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using ShutdownTimer.Server.WindowsService.Areas.Identity.Data;
-using ShutdownTimer.Server.WindowsService.Authorization;
-using ShutdownTimer.Server.WindowsService.Extensions;
+using ShutdownTimer.Server.Authorization;
 
-namespace ShutdownTimer.Server.WindowsService.Controllers
+namespace ShutdownTimer.Server.Controllers
 {
 	[Route("[controller]")]
 	public class OperationController : Controller

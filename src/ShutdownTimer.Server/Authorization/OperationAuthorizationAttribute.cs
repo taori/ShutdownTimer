@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.Filters;
-using ShutdownTimer.Server.WindowsService.Models;
+using ShutdownTimer.Server.Models;
 
-namespace ShutdownTimer.Server.WindowsService.Authorization
+namespace ShutdownTimer.Server.Authorization
 {
 	public class OperationAuthorizationAttribute : Attribute, IAsyncAuthorizationFilter
 	{

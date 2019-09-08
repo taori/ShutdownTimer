@@ -8,7 +8,7 @@ using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using ShutdownTimer.Server.WindowsService.Extensions;
+using ShutdownTimer.Server.Extensions;
 
 namespace ShutdownTimer.Server
 {

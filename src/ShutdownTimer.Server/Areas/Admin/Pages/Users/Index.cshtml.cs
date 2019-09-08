@@ -1,14 +1,13 @@
 using System.Collections.Generic;
 using System.Linq;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using ShutdownTimer.Server.WindowsService.Areas.Identity.Data;
-using ShutdownTimer.Server.WindowsService.Models;
+using ShutdownTimer.Server.Authorization;
+using ShutdownTimer.Server.Models;
 
-namespace ShutdownTimer.Server.WindowsService.Areas.Admin.Pages.Users
+namespace ShutdownTimer.Server.Areas.Admin.Pages.Users
 {
-	[Authorize(WellKnownRoleNames.Administrator)]
+	[AuthorizeRole(WellKnownRoleNames.Administrator)]
     public class IndexModel : PageModel
     {
 	    private readonly UserManager<ServiceUser> _userManager;

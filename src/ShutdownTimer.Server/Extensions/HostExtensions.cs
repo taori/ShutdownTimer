@@ -1,7 +1,7 @@
 ﻿using System.ServiceProcess;
 using Microsoft.AspNetCore.Hosting;
 
-namespace ShutdownTimer.Server.WindowsService.Extensions
+namespace ShutdownTimer.Server.Extensions
 {
 	public static class WebHostServiceExtensions
 	{
