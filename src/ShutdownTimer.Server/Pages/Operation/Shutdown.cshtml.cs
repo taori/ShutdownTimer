@@ -19,11 +19,13 @@ namespace ShutdownTimer.Server.Pages.Operation
 	{
 		private readonly ILogger<ShutdownModel> _logger;
 		private readonly IShutdownHistoryService _shutdownHistoryService;
+		private readonly ISystemControlService _systemControlService;
 
-		public ShutdownModel(ILogger<ShutdownModel> logger, IShutdownHistoryService shutdownHistoryService)
+		public ShutdownModel(ILogger<ShutdownModel> logger, IShutdownHistoryService shutdownHistoryService, ISystemControlService systemControlService)
 		{
 			_logger = logger;
 			_shutdownHistoryService = shutdownHistoryService;
+			_systemControlService = systemControlService;
 		}
 
 		public class InputModel
@@ -56,21 +58,15 @@ namespace ShutdownTimer.Server.Pages.Operation
 			if (!ModelState.IsValid)
 				return Page();
 
-			_logger.LogInformation($"Executing Shutdown in {hour}:{minute}.");
-			try
+			var timeSpan = new TimeSpan(hour, minute, 0);
+			if (_systemControlService.ShutDown(timeSpan))
 			{
-				var ts = TimeSpan.FromHours(hour).Add(TimeSpan.FromMinutes(minute));
-				using (var process = Process.Start("shutdown", $"/s /t {ts.TotalSeconds} /d u:0:0"))
-				{
-					process.WaitForExit();
-					await _shutdownHistoryService.LogShutdownAsync(HttpContext.User, ts);
-					return Redirect(ReturnUrl ?? Url.Content("~/"));
-				}
+				await _shutdownHistoryService.LogShutdownAsync(HttpContext.User, timeSpan);
+				return Redirect(ReturnUrl ?? Url.Content("~/"));
 			}
-			catch (Exception e)
+			else
 			{
 				ModelState.AddModelError(string.Empty, "An error occured while trying to shut down.");
-				_logger.LogError(e.ToString());
 				return Page();
 			}
 		}
@@ -80,21 +76,15 @@ namespace ShutdownTimer.Server.Pages.Operation
 			if (!ModelState.IsValid)
 				return Page();
 
-			_logger.LogInformation($"Executing Shutdown in {Input.Hours}:{Input.Minutes}.");
-			try
+			var timeSpan = new TimeSpan(Input.Hours, Input.Minutes, 0);
+			if (_systemControlService.ShutDown(timeSpan))
 			{
-				var ts = TimeSpan.FromHours(Input.Hours).Add(TimeSpan.FromMinutes(Input.Minutes));
-				using (var process = Process.Start("shutdown", $"/s /t {ts.TotalSeconds} /d u:0:0"))
-				{
-					process.WaitForExit();
-					await _shutdownHistoryService.LogShutdownAsync(HttpContext.User, ts);
-					return Redirect(ReturnUrl ?? Url.Content("~/"));
-				}
+				await _shutdownHistoryService.LogShutdownAsync(HttpContext.User, timeSpan);
+				return Redirect(ReturnUrl ?? Url.Content("~/"));
 			}
-			catch (Exception e)
+			else
 			{
 				ModelState.AddModelError(string.Empty, "An error occured while trying to shut down.");
-				_logger.LogError(e.ToString());
 				return Page();
 			}
 		}

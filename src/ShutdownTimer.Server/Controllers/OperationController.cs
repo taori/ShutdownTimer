@@ -4,6 +4,7 @@ using System.Net;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using ShutdownTimer.Server.Abstraction;
 using ShutdownTimer.Server.Authorization;
 using ShutdownTimer.Server.Models;
 
@@ -13,10 +14,12 @@ namespace ShutdownTimer.Server.Controllers
 	public class OperationController : Controller
 	{
 		private readonly ILogger<OperationController> _logger;
+		private readonly ISystemControlService _systemControlService;
 
-		public OperationController(ILogger<OperationController> logger)
+		public OperationController(ILogger<OperationController> logger, ISystemControlService systemControlService)
 		{
 			_logger = logger;
+			_systemControlService = systemControlService;
 		}
 
 		[HttpGet]
@@ -32,50 +35,28 @@ namespace ShutdownTimer.Server.Controllers
 		[OperationAuthorization(OperationType.AbortShutdown)]
 		public IActionResult AbortShutdown(string returnUrl = null)
 		{
-			_logger.LogInformation($"Executing AbortShutdown.");
-			try
+			if (_systemControlService.AbortShutdown())
 			{
-				using (var process = Process.Start("shutdown", $"/a"))
-				{
-					process.WaitForExit();
-					return Redirect(returnUrl ?? Url.Content("~/"));
-				}
+				return Redirect(returnUrl ?? Url.Content("~/"));
 			}
-			catch (Exception e)
+			else
 			{
-				_logger.LogError(e.ToString());
-				return StatusCode((int)HttpStatusCode.InternalServerError);
+				return StatusCode((int) HttpStatusCode.InternalServerError);
 			}
 		}
 
 		[Route("[action]")]
-		[ProducesResponseType(typeof(bool), 200)]
-		[ProducesResponseType((int)HttpStatusCode.InternalServerError)]
 		[HttpPost]
 		[OperationAuthorization(OperationType.IsShutdownPending)]
 		public IActionResult IsShutDownPending()
 		{
-			_logger.LogInformation($"Executing IsShutDownPending.");
-			try
+			var pending = _systemControlService.IsShutdownPending();
+			if (pending.HasValue)
 			{
-				using (var process = Process.Start("shutdown", $"/s /t 500"))
-				{
-					process.WaitForExit();
-					var status = process.ExitCode;
-					var isPending = status == 1190;
-					if (!isPending)
-					{
-						using (var subProcess = Process.Start("shutdown", $"/a"))
-						{
-							subProcess.WaitForExit();
-						}
-					}
-					return Ok(isPending);
-				}
+				return Ok(pending.Value);
 			}
-			catch (Exception e)
+			else
 			{
-				_logger.LogError(e.ToString());
 				return StatusCode((int)HttpStatusCode.InternalServerError);
 			}
 		}
@@ -85,18 +66,12 @@ namespace ShutdownTimer.Server.Controllers
 		[OperationAuthorization(OperationType.Hibernate)]
 		public IActionResult Hibernate(string returnUrl = null)
 		{
-			_logger.LogInformation($"Executing Hibernate.");
-			try
+			if (_systemControlService.Hibernate())
 			{
-				using (var process = Process.Start("shutdown", $"/h"))
-				{
-					process.WaitForExit();
-					return Redirect(returnUrl ?? Url.Content("~/"));
-				}
+				return Redirect(returnUrl ?? Url.Content("~/"));
 			}
-			catch (Exception e)
+			else
 			{
-				_logger.LogError(e.ToString());
 				return StatusCode((int)HttpStatusCode.InternalServerError);
 			}
 		}
@@ -106,18 +81,12 @@ namespace ShutdownTimer.Server.Controllers
 		[OperationAuthorization(OperationType.Restart)]
 		public IActionResult Restart(string returnUrl = null)
 		{
-			_logger.LogInformation($"Executing Restart.");
-			try
+			if (_systemControlService.Restart())
 			{
-				using (var process = Process.Start("shutdown", $"/r"))
-				{
-					process.WaitForExit();
-					return Redirect(returnUrl ?? Url.Content("~/"));
-				}
+				return Redirect(returnUrl ?? Url.Content("~/"));
 			}
-			catch (Exception e)
+			else
 			{
-				_logger.LogError(e.ToString());
 				return StatusCode((int)HttpStatusCode.InternalServerError);
 			}
 		}
@@ -127,18 +96,12 @@ namespace ShutdownTimer.Server.Controllers
 		[OperationAuthorization(OperationType.Logout)]
 		public IActionResult Logout(string returnUrl = null)
 		{
-			_logger.LogInformation($"Executing Restart.");
-			try
+			if (_systemControlService.Logout())
 			{
-				using (var process = Process.Start("shutdown", $"/l"))
-				{
-					process.WaitForExit();
-					return Redirect(returnUrl ?? Url.Content("~/"));
-				}
+				return Redirect(returnUrl ?? Url.Content("~/"));
 			}
-			catch (Exception e)
+			else
 			{
-				_logger.LogError(e.ToString());
 				return StatusCode((int)HttpStatusCode.InternalServerError);
 			}
 		}
