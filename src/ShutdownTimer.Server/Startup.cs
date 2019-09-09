@@ -3,11 +3,13 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
@@ -15,7 +17,9 @@ using Microsoft.EntityFrameworkCore;
 using ShutdownTimer.Server.Data;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using ShutdownTimer.Server.Abstraction;
 using ShutdownTimer.Server.Models;
+using ShutdownTimer.Server.Services;
 
 namespace ShutdownTimer.Server
 {
@@ -25,6 +29,44 @@ namespace ShutdownTimer.Server
 		{
 			Configuration = configuration;
 			HostingEnvironment = hostingEnvironment;
+		}
+
+		public class Fu : ITrackingConsentFeature
+		{
+			public IHttpContextAccessor Accessor { get; }
+
+			public Fu(IHttpContextAccessor accessor)
+			{
+				Accessor = accessor;
+			}
+
+			public void GrantConsent()
+			{
+				Accessor.HttpContext.Response.Cookies.Append("wellfuck","shit");
+			}
+
+			public void WithdrawConsent()
+			{
+				Accessor.HttpContext.Response.Cookies.Delete("wellfuck");
+			}
+
+			public string CreateConsentCookie()
+			{
+				return "shit";
+			}
+
+			public bool IsConsentNeeded => true;
+
+			public bool HasConsent
+			{
+				get
+				{
+					return Accessor.HttpContext.Request.Cookies.TryGetValue("wellfuck", out var val) &&
+					       val == "shit";
+				}
+			}
+
+			public bool CanTrack => true;
 		}
 
 		public IConfiguration Configuration { get; }
@@ -39,6 +81,7 @@ namespace ShutdownTimer.Server
 				options.CheckConsentNeeded = context => true;
 				options.MinimumSameSitePolicy = SameSiteMode.None;
 			});
+			services.AddScoped<IShutdownHistoryService, ShutdownHistoryService>();
 
 			if (HostingEnvironment.IsDevelopment())
 			{
@@ -96,7 +139,6 @@ namespace ShutdownTimer.Server
 			app.UseCookiePolicy();
 
 			app.UseAuthentication();
-
 			app.UseMvc(routes =>
 			{
 				routes.MapRoute(

@@ -18,6 +18,14 @@ namespace ShutdownTimer.Server.Data
 		{
 		}
 
+		public DbSet<ShutdownHistoryItem> ShutdownExecutionHotlinks { get; set; }
+		protected override void OnModelCreating(ModelBuilder builder)
+		{
+			base.OnModelCreating(builder);
+
+			builder.Entity<ShutdownHistoryItem>().HasKey(d => new {d.UserId, d.Hours, Seconds = d.Minutes});
+		}
+
 		public override int SaveChanges()
 		{
 			ModifyChangeTrackerEntries();

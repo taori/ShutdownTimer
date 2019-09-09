@@ -3,9 +3,11 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using ShutdownTimer.Server.Extensions;
@@ -26,8 +28,8 @@ namespace ShutdownTimer.Server
 				Directory.SetCurrentDirectory(pathToContentRoot);
 			}
 
-			var builder = CreateWebHostBuilder(
-				args.Where(arg => arg != "--console").ToArray());
+			var builder = CreateWebHostBuilder(args.Where(arg => arg != "--console").ToArray())
+				.UseKestrel();
 
 			var host = builder.Build();
 
@@ -54,14 +56,5 @@ namespace ShutdownTimer.Server
 					// Configure the app here.
 				})
 				.UseStartup<Startup>();
-
-//		public static void Main(string[] args)
-//		{
-//			CreateWebHostBuilder(args).Build().Run();
-//		}
-//
-//		public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
-//			WebHost.CreateDefaultBuilder(args)
-//				.UseStartup<Startup>();
 	}
 }
