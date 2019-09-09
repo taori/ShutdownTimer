@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Net;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using ShutdownTimer.Server.Authorization;
+using ShutdownTimer.Server.Models;
 
 namespace ShutdownTimer.Server.Controllers
 {
@@ -18,30 +20,17 @@ namespace ShutdownTimer.Server.Controllers
 		}
 
 		[HttpGet]
-		[Route("[action]/{seconds}")]
-		[OperationAuthorization(OperationType.Shutdown)]
-		public IActionResult Shutdown(int seconds)
+		[Route("[action]")]
+		[Authorize]
+		public IActionResult Index()
 		{
-			_logger.LogInformation($"Executing Shutdown {seconds}.");
-			try
-			{
-				using (var process = Process.Start("shutdown", $"/s /t {seconds} /d u:0:0"))
-				{
-					process.WaitForExit();
-					return Ok();
-				}
-			}
-			catch (Exception e)
-			{
-				_logger.LogError(e.ToString());
-				return StatusCode((int) HttpStatusCode.InternalServerError);
-			}
+			return View();
 		}
 
-		[HttpGet]
+		[HttpPost]
 		[Route("[action]")]
 		[OperationAuthorization(OperationType.AbortShutdown)]
-		public IActionResult AbortShutdown()
+		public IActionResult AbortShutdown(string returnUrl = null)
 		{
 			_logger.LogInformation($"Executing AbortShutdown.");
 			try
@@ -49,7 +38,7 @@ namespace ShutdownTimer.Server.Controllers
 				using (var process = Process.Start("shutdown", $"/a"))
 				{
 					process.WaitForExit();
-					return Ok();
+					return Redirect(returnUrl ?? Url.Content("~/"));
 				}
 			}
 			catch (Exception e)
@@ -62,7 +51,7 @@ namespace ShutdownTimer.Server.Controllers
 		[Route("[action]")]
 		[ProducesResponseType(typeof(bool), 200)]
 		[ProducesResponseType((int)HttpStatusCode.InternalServerError)]
-		[HttpGet]
+		[HttpPost]
 		[OperationAuthorization(OperationType.IsShutdownPending)]
 		public IActionResult IsShutDownPending()
 		{
@@ -92,9 +81,9 @@ namespace ShutdownTimer.Server.Controllers
 		}
 
 		[Route("[action]")]
-		[HttpGet]
+		[HttpPost]
 		[OperationAuthorization(OperationType.Hibernate)]
-		public IActionResult Hibernate()
+		public IActionResult Hibernate(string returnUrl = null)
 		{
 			_logger.LogInformation($"Executing Hibernate.");
 			try
@@ -102,7 +91,7 @@ namespace ShutdownTimer.Server.Controllers
 				using (var process = Process.Start("shutdown", $"/h"))
 				{
 					process.WaitForExit();
-					return Ok();
+					return Redirect(returnUrl ?? Url.Content("~/"));
 				}
 			}
 			catch (Exception e)
@@ -113,9 +102,9 @@ namespace ShutdownTimer.Server.Controllers
 		}
 
 		[Route("[action]")]
-		[HttpGet]
+		[HttpPost]
 		[OperationAuthorization(OperationType.Restart)]
-		public IActionResult Restart()
+		public IActionResult Restart(string returnUrl = null)
 		{
 			_logger.LogInformation($"Executing Restart.");
 			try
@@ -123,7 +112,7 @@ namespace ShutdownTimer.Server.Controllers
 				using (var process = Process.Start("shutdown", $"/r"))
 				{
 					process.WaitForExit();
-					return Ok();
+					return Redirect(returnUrl ?? Url.Content("~/"));
 				}
 			}
 			catch (Exception e)
@@ -134,9 +123,9 @@ namespace ShutdownTimer.Server.Controllers
 		}
 
 		[Route("[action]")]
-		[HttpGet]
+		[HttpPost]
 		[OperationAuthorization(OperationType.Logout)]
-		public IActionResult Logout()
+		public IActionResult Logout(string returnUrl = null)
 		{
 			_logger.LogInformation($"Executing Restart.");
 			try
@@ -144,7 +133,7 @@ namespace ShutdownTimer.Server.Controllers
 				using (var process = Process.Start("shutdown", $"/l"))
 				{
 					process.WaitForExit();
-					return Ok();
+					return Redirect(returnUrl ?? Url.Content("~/"));
 				}
 			}
 			catch (Exception e)

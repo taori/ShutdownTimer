@@ -1,10 +1,20 @@
 ﻿@page
+@using Microsoft.AspNetCore.Http.Extensions
+@using ShutdownTimer.Server.TagHelpers.Bootstrap
 @model ShutdownTimer.Server.Areas.Admin.Pages.Users.IndexModel
 @addTagHelper *, TagHelperSamples.Authorization
 @{
 }
 
-@foreach (var user in Model.Users)
-{
-	<li>@user.NormalizedUserName</li>
-}
+<div asp-validation-summary="All" class="text-danger"></div>
+
+<ul class="list-group">
+	@foreach (var user in Model.Users)
+	{
+		<li class="d-flex flex-row list-group-item">
+			<span class="flex-grow-1 align-self-center">@user.NormalizedUserName</span>
+			<a class="btn btn-outline-danger ml-2" asp-page-handler="Delete" asp-route-id="@user.Id" asp-route-returnUrl="@HttpContext.Request.GetEncodedUrl()">Delete</a>
+			<a class="btn btn-outline-primary ml-2" asp-page="./Edit" asp-route-id="@user.Id" asp-route-returnUrl="@HttpContext.Request.GetDisplayUrl()">Edit</a>
+		</li>
+	}
+</ul>

@@ -1,0 +1,31 @@
+﻿@page "{returnUrl?}"
+@model ShutdownTimer.Server.Pages.Operation.ShutdownModel
+@{
+	ViewData["Title"] = "Shutdown PC";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<div class="row">
+	<div class="col-md-4">
+		<form method="post">
+			<input type="hidden" asp-for="@Model.ReturnUrl" />
+			<div asp-validation-summary="All" class="text-danger"></div>
+			<div class="form-group">
+				<label asp-for="@Model.Input.Hours"></label>
+				<input asp-for="@Model.Input.Hours" class="form-control" />
+				<span asp-validation-for="@Model.Input.Hours" class="text-danger"></span>
+			</div>
+			<div class="form-group">
+				<label asp-for="@Model.Input.Minutes"></label>
+				<input asp-for="@Model.Input.Minutes" class="form-control" />
+				<span asp-validation-for="@Model.Input.Minutes" class="text-danger"></span>
+			</div>
+			<button type="submit" class="btn btn-primary">Execute</button>
+		</form>
+	</div>
+</div>
+
+@section Scripts {
+	<partial name="_ValidationScriptsPartial" />
+}

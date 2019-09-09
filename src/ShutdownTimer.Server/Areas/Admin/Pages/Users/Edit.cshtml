@@ -1,0 +1,26 @@
+﻿@page "{id}"
+@using ShutdownTimer.Server.Authorization
+@model ShutdownTimer.Server.Areas.Admin.Pages.Users.EditModel
+@{
+}
+
+<h1>Permissions for: @Model.CurrentUser.UserName</h1>
+
+<form asp-page-handler="Save" method="post" asp-route-id="@Model.UserId">
+	<input type="hidden" asp-for="@Model.ReturnUrl" />
+	<div class="container p-0">
+		<button class="m-0 mt-2 mb-2" type="submit" bs-outline="true" bs-type="Primary">Save</button>
+	</div>
+
+	@for (var index = 0; index < Model.Input.AvailableOperations.Count; index++)
+	{
+		<div>       
+			<input type="checkbox" asp-for="@Model.Input.AvailableOperations[index].Checked" />
+			<label asp-for="@Model.Input.AvailableOperations[index].Checked">@Model.Input.AvailableOperations[index].Description</label>
+			<input type="hidden" asp-for="@Model.Input.AvailableOperations[index].Value" />
+			<input type="hidden" asp-for="@Model.Input.AvailableOperations[index].Description" />
+		</div>
+	}
+
+</form>
+
