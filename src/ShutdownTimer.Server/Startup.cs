@@ -31,44 +31,6 @@ namespace ShutdownTimer.Server
 			HostingEnvironment = hostingEnvironment;
 		}
 
-		public class Fu : ITrackingConsentFeature
-		{
-			public IHttpContextAccessor Accessor { get; }
-
-			public Fu(IHttpContextAccessor accessor)
-			{
-				Accessor = accessor;
-			}
-
-			public void GrantConsent()
-			{
-				Accessor.HttpContext.Response.Cookies.Append("wellfuck","shit");
-			}
-
-			public void WithdrawConsent()
-			{
-				Accessor.HttpContext.Response.Cookies.Delete("wellfuck");
-			}
-
-			public string CreateConsentCookie()
-			{
-				return "shit";
-			}
-
-			public bool IsConsentNeeded => true;
-
-			public bool HasConsent
-			{
-				get
-				{
-					return Accessor.HttpContext.Request.Cookies.TryGetValue("wellfuck", out var val) &&
-					       val == "shit";
-				}
-			}
-
-			public bool CanTrack => true;
-		}
-
 		public IConfiguration Configuration { get; }
 		public IHostingEnvironment HostingEnvironment { get; }
 
