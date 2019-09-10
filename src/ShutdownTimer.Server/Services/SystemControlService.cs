@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Net;
+using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using ShutdownTimer.Server.Abstraction;
 
@@ -10,9 +11,12 @@ namespace ShutdownTimer.Server.Services
 	{
 		private readonly ILogger<SystemControlService> _logger;
 
-		public SystemControlService(ILogger<SystemControlService> logger)
+		private readonly ICustomCommandService _customCommandService;
+
+		public SystemControlService(ILogger<SystemControlService> logger, ICustomCommandService customCommandService)
 		{
 			_logger = logger;
+			_customCommandService = customCommandService;
 		}
 
 		public bool AbortShutdown()
@@ -121,6 +125,32 @@ namespace ShutdownTimer.Server.Services
 			try
 			{
 				using (var process = Process.Start("shutdown", $"/s /t {delay.TotalSeconds} /d u:0:0"))
+				{
+					process.WaitForExit();
+					return true;
+				}
+			}
+			catch (Exception e)
+			{
+				_logger.LogError(e.ToString());
+				return false;
+			}
+		}
+
+		public async Task<bool> ExecuteCustomCommandAsync(int id)
+		{
+			_logger.LogInformation($"Executing custom command [{id}].");
+
+			var command = await _customCommandService.GetAsync(id);
+			if (command == null)
+			{
+				_logger.LogError($"Command not found.");
+				return false;
+			}
+				
+			try
+			{
+				using (var process = Process.Start(command.Program, command.Argument))
 				{
 					process.WaitForExit();
 					return true;

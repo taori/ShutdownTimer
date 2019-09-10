@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using ShutdownTimer.Server.Abstraction;
 using ShutdownTimer.Server.Authorization;
 using ShutdownTimer.Server.Data;
 using ShutdownTimer.Server.Models;
@@ -14,16 +15,19 @@ namespace ShutdownTimer.Server.Areas.Admin.Pages.Users
 {
 	public class EditModel : PageModel
 	{
-		public UserManager<ServiceUser> UserManager { get; }
+		private readonly UserManager<ServiceUser> _userManager;
 
-		public EditModel(UserManager<ServiceUser> userManager)
+		private readonly IEnumerable<IOperationProvider> _operationProviders;
+
+		public EditModel(UserManager<ServiceUser> userManager, IEnumerable<IOperationProvider> operationProviders)
 		{
-			UserManager = userManager;
+			_userManager = userManager;
+			_operationProviders = operationProviders;
 		}
 
 		public class InputModel
 		{
-			public List<TypedCheckboxOption<OperationType>> AvailableOperations { get; set; } = new List<TypedCheckboxOption<OperationType>>();
+			public List<TypedCheckboxOption<string>> AvailableOperations { get; set; } = new List<TypedCheckboxOption<string>>();
 		}
 
 		public ServiceUser CurrentUser { get; set; }
@@ -37,17 +41,22 @@ namespace ShutdownTimer.Server.Areas.Admin.Pages.Users
 		[BindProperty]
 		public InputModel Input { get; set; } = new InputModel();
 
+		public IEnumerable<Claim> GetAvailableOperationClaims()
+		{
+			return _operationProviders
+				.SelectMany(d => d.GetOperations())
+				.Select(d => new Claim(OperationAuthorizationAttribute.ClaimPrefix, d));
+		}
+
 		public async Task<IActionResult> OnPostSaveAsync()
 		{
 			if (!ModelState.IsValid)
 				return Page();
 
-			var user = await UserManager.FindByIdAsync(UserId.ToString());
+			var user = await _userManager.FindByIdAsync(UserId.ToString());
 
-			var removeClaims = Enum.GetValues(typeof(OperationType))
-				.Cast<OperationType>()
-				.Select(d => new Claim(OperationAuthorizationAttribute.ClaimPrefix, d.ToString()));
-			var removal = await UserManager.RemoveClaimsAsync(user, removeClaims);
+			var removeClaims = GetAvailableOperationClaims();
+			var removal = await _userManager.RemoveClaimsAsync(user, removeClaims);
 			if (!removal.Succeeded)
 			{
 				ModelState.AddModelError(string.Empty, string.Join("<br/>", removal.Errors.Select(d => d.Description)));
@@ -57,7 +66,7 @@ namespace ShutdownTimer.Server.Areas.Admin.Pages.Users
 			var addClaims = Input.AvailableOperations
 				.Where(d => d.Checked)
 				.Select(d => new Claim(OperationAuthorizationAttribute.ClaimPrefix, d.Value.ToString()));
-			var addition = await UserManager.AddClaimsAsync(user, addClaims);
+			var addition = await _userManager.AddClaimsAsync(user, addClaims);
 			if (!addition.Succeeded)
 			{
 				ModelState.AddModelError(string.Empty, string.Join("<br/>", removal.Errors.Select(d => d.Description)));
@@ -69,18 +78,16 @@ namespace ShutdownTimer.Server.Areas.Admin.Pages.Users
 
 		public async Task OnGetAsync()
 		{
-			CurrentUser = await UserManager.FindByIdAsync(UserId.ToString());
-			var claims = await UserManager.GetClaimsAsync(CurrentUser);
+			CurrentUser = await _userManager.FindByIdAsync(UserId.ToString());
+			var claims = await _userManager.GetClaimsAsync(CurrentUser);
 
 			var grantedOperationClaims = claims
 				.Where(d => d.Type == OperationAuthorizationAttribute.ClaimPrefix)
-				.Select(d => Enum.Parse<OperationType>(d.Value))
+				.Select(d => d.Value)
 				.ToHashSet();
 
-			Input.AvailableOperations =
-				Enum.GetValues(typeof(OperationType))
-					.Cast<OperationType>()
-					.Select(d => new TypedCheckboxOption<OperationType>(d.ToString(), grantedOperationClaims.Contains(d), d))
+			Input.AvailableOperations = GetAvailableOperationClaims()
+					.Select(d => new TypedCheckboxOption<string>(d.ToString(), grantedOperationClaims.Contains(d.Value), d.Value))
 					.ToList();
 		}
 	}

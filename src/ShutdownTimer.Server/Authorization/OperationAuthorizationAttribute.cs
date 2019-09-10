@@ -22,6 +22,11 @@ namespace ShutdownTimer.Server.Authorization
 			return $"{ClaimPrefix}:{type.ToString()}";
 		}
 
+		public static string RenderClaim(string value)
+		{
+			return $"{ClaimPrefix}:{value}";
+		}
+
 		public Task OnAuthorizationAsync(AuthorizationFilterContext context)
 		{
 			var passed = context.HttpContext.User.IsInRole(WellKnownRoleNames.Administrator) || context.HttpContext.User.HasClaim(ClaimPrefix, OperationType.ToString());

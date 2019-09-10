@@ -1,13 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Diagnostics;
-using System.Linq;
-using System.Net;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.Extensions.Logging;
 using ShutdownTimer.Server.Abstraction;
 using ShutdownTimer.Server.Authorization;
 using ShutdownTimer.Server.Data;
@@ -17,13 +13,11 @@ namespace ShutdownTimer.Server.Pages.Operation
 	[OperationAuthorization(OperationType.Shutdown)]
 	public class ShutdownModel : PageModel
 	{
-		private readonly ILogger<ShutdownModel> _logger;
 		private readonly IShutdownHistoryService _shutdownHistoryService;
 		private readonly ISystemControlService _systemControlService;
 
-		public ShutdownModel(ILogger<ShutdownModel> logger, IShutdownHistoryService shutdownHistoryService, ISystemControlService systemControlService)
+		public ShutdownModel(IShutdownHistoryService shutdownHistoryService, ISystemControlService systemControlService)
 		{
-			_logger = logger;
 			_shutdownHistoryService = shutdownHistoryService;
 			_systemControlService = systemControlService;
 		}

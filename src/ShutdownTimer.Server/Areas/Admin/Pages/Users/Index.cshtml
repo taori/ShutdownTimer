@@ -4,9 +4,11 @@
 @model ShutdownTimer.Server.Areas.Admin.Pages.Users.IndexModel
 @addTagHelper *, TagHelperSamples.Authorization
 @{
+	ViewData["Title"] = "Users";
+	Layout = "_Layout";
 }
 
-<div asp-validation-summary="All" class="text-danger"></div>
+<h2>@ViewData["Title"]</h2>
 
 <ul class="list-group">
 	@foreach (var user in Model.Users)

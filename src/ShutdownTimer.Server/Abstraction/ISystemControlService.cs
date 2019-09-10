@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 
 namespace ShutdownTimer.Server.Abstraction
 {
@@ -10,5 +11,6 @@ namespace ShutdownTimer.Server.Abstraction
 		bool Restart();
 		bool Logout();
 		bool ShutDown(TimeSpan delay);
+		Task<bool> ExecuteCustomCommandAsync(int id);
 	}
 }

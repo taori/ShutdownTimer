@@ -35,10 +35,10 @@
 							<a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
 						</li>
 						<li class="nav-item" asp-authorize asp-roles="@WellKnownRoleNames.Administrator">
-							<a class="nav-link text-dark" href="/Admin/Users">Admin</a>
+							<a class="nav-link text-dark" asp-area="Admin" asp-page="/Options">Admin</a>
 						</li>
 						<li class="nav-item" asp-authorize>
-							<a class="nav-link text-dark" asp-controller="Operation" asp-action="Index">Operations</a>
+							<a class="nav-link text-dark" asp-area="" asp-page="/Operation/Index">Operations</a>
 						</li>
 					</ul>
 				</div>

@@ -1,0 +1,19 @@
+﻿@page
+@using ShutdownTimer.Server.Authorization
+@using Microsoft.AspNetCore.Http.Extensions
+@model ShutdownTimer.Server.Areas.Admin.Pages.Operation.IndexModel
+@{
+	ViewData["Title"] = "Available Operations";
+	Layout = "_Layout";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+<ul class="list-group">
+	@foreach(var item in Model.Options)
+	{
+		<li class="d-flex flex-row list-group-item" asp-authorize asp-claims="@OperationAuthorizationAttribute.RenderClaim(OperationType.Shutdown)">
+			@item.Type = @item.Value
+		</li>
+	}
+</ul>

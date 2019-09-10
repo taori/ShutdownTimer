@@ -82,6 +82,11 @@ namespace ShutdownTimer.Server
 				options.MinimumSameSitePolicy = SameSiteMode.None;
 			});
 			services.AddScoped<IShutdownHistoryService, ShutdownHistoryService>();
+			services.AddScoped<ISystemControlService, SystemControlService>();
+			services.AddScoped<IOperationProvider, EnumOperationProvider>();
+			services.AddScoped<IOperationProvider, CustomCommandService>();
+			services.AddScoped<ICustomCommandService, CustomCommandService>();
+			services.AddScoped<ICommandProvider, CustomCommandProvider>();
 
 			if (HostingEnvironment.IsDevelopment())
 			{

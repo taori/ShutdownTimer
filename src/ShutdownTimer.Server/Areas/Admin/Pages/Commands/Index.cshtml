@@ -1,0 +1,27 @@
+﻿@page
+@using Microsoft.AspNetCore.Http.Extensions
+@model ShutdownTimer.Server.Areas.Admin.Pages.Commands.IndexModel
+@{
+	ViewData["Title"] = "Custom commands";
+	Layout = "_Layout";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+<a class="btn btn-link" asp-page="./Add" asp-route-returnUrl="@HttpContext.Request.GetDisplayUrl()">Add new command</a>
+
+<ul class="list-group">
+	@foreach (var item in Model.Commands)
+	{
+		<li class="d-flex flex-row list-group-item row">
+			<div class="col align-middle align-self-center">@item.Program</div>
+			<div class="col align-middle align-self-center">@item.Argument</div>
+			<div class="col align-middle align-self-center">@item.PermissionName</div>
+			<div class="col-auto align-middle">
+				<a class="btn btn-link"
+				   asp-page-handler="Delete"
+				   asp-route-id="@item.Id">Delete</a>
+			</div>
+		</li>
+	}
+</ul>

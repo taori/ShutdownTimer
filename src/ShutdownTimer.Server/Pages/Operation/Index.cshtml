@@ -1,4 +1,6 @@
-﻿@using Microsoft.AspNetCore.Http.Extensions
+﻿@page
+@model ShutdownTimer.Server.Pages.Operation.IndexModel
+@using Microsoft.AspNetCore.Http.Extensions
 @using ShutdownTimer.Server.Authorization
 @{
 	ViewData["Title"] = "Operations";
@@ -11,36 +13,46 @@
 
 	<li class="d-flex flex-row list-group-item" asp-authorize asp-claims="@OperationAuthorizationAttribute.RenderClaim(OperationType.Shutdown)">
 		<form method="get">
-			<a asp-controller="Operation" asp-action="Shutdown" asp-route-returnUrl="@Context.Request.GetDisplayUrl()" type="submit" class="btn btn-outline-primary ml-2">Execute</a>
+			<a asp-page="/Operation/Shutdown" asp-route-returnUrl="@HttpContext.Request.GetDisplayUrl()" type="submit" class="btn btn-outline-primary ml-2">Execute</a>
 			<span class="flex-grow-1 align-middle ml-4">Shutdown PC</span>
 		</form>
 	</li>
 
 	<li class="d-flex flex-row list-group-item" asp-authorize asp-claims="@OperationAuthorizationAttribute.RenderClaim(OperationType.AbortShutdown)">
-		<form method="post" asp-controller="Operation" asp-action="AbortShutdown" asp-route-returnUrl="@Context.Request.GetDisplayUrl()">
+		<form method="post" asp-controller="Operation" asp-action="AbortShutdown" asp-route-returnUrl="@HttpContext.Request.GetDisplayUrl()">
 			<button type="submit" class="btn btn-outline-primary ml-2">Execute</button>
 			<span class="flex-grow-1 align-middle ml-4">Abort Shutdown</span>
 		</form>
 	</li>
 
 	<li class="d-flex flex-row list-group-item" asp-authorize asp-claims="@OperationAuthorizationAttribute.RenderClaim(OperationType.Hibernate)">
-		<form method="post" asp-controller="Operation" asp-action="Hibernate" asp-route-returnUrl="@Context.Request.GetDisplayUrl()">
+		<form method="post" asp-controller="Operation" asp-action="Hibernate" asp-route-returnUrl="@HttpContext.Request.GetDisplayUrl()">
 			<button type="submit" class="btn btn-outline-primary ml-2">Execute</button>
 			<span class="flex-grow-1 align-middle ml-4">Hibernate</span>
 		</form>
 	</li>
 
 	<li class="d-flex flex-row list-group-item" asp-authorize asp-claims="@OperationAuthorizationAttribute.RenderClaim(OperationType.Logout)">
-		<form method="post" asp-controller="Operation" asp-action="Logout" asp-route-returnUrl="@Context.Request.GetDisplayUrl()">
+		<form method="post" asp-controller="Operation" asp-action="Logout" asp-route-returnUrl="@HttpContext.Request.GetDisplayUrl()">
 			<button type="submit" class="btn btn-outline-primary ml-2">Execute</button>
 			<span class="flex-grow-1 align-middle ml-4">Logout user</span>
 		</form>
 	</li>
 
 	<li class="d-flex flex-row list-group-item" asp-authorize asp-claims="@OperationAuthorizationAttribute.RenderClaim(OperationType.Restart)">
-		<form method="post" asp-controller="Operation" asp-action="Restart" asp-route-returnUrl="@Context.Request.GetDisplayUrl()">
+		<form method="post" asp-controller="Operation" asp-action="Restart" asp-route-returnUrl="@HttpContext.Request.GetDisplayUrl()">
 			<button type="submit" class="btn btn-outline-primary ml-2">Execute</button>
 			<span class="flex-grow-1 align-middle ml-4">Restart PC</span>
 		</form>
 	</li>
+	
+	@foreach(var item in Model.CustomCommands)
+	{
+		<li class="d-flex flex-row list-group-item" asp-authorize asp-claims="@OperationAuthorizationAttribute.RenderClaim(item.PermissionName)">
+			<form method="post" asp-controller="Operation" asp-action="CustomCommand" asp-route-id="@item.Id" asp-route-returnUrl="@HttpContext.Request.GetDisplayUrl()">
+				<button type="submit" class="btn btn-outline-primary ml-2">Execute</button>
+				<span class="flex-grow-1 align-middle ml-4">@item.CommandName</span>
+			</form>
+		</li>
+	}
 </ul>

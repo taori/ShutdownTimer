@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Net;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -82,6 +83,21 @@ namespace ShutdownTimer.Server.Controllers
 		public IActionResult Restart(string returnUrl = null)
 		{
 			if (_systemControlService.Restart())
+			{
+				return Redirect(returnUrl ?? Url.Content("~/"));
+			}
+			else
+			{
+				return StatusCode((int)HttpStatusCode.InternalServerError);
+			}
+		}
+
+		[Route("[action]")]
+		[HttpPost]
+		[Authorize]
+		public async Task<IActionResult> CustomCommand(int id, string returnUrl = null)
+		{
+			if (await _systemControlService.ExecuteCustomCommandAsync(id))
 			{
 				return Redirect(returnUrl ?? Url.Content("~/"));
 			}

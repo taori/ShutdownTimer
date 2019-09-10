@@ -19,6 +19,9 @@ namespace ShutdownTimer.Server.Data
 		}
 
 		public DbSet<ShutdownHistoryItem> ShutdownExecutionHotlinks { get; set; }
+
+		public DbSet<CustomCommand> CustomCommands { get; set; }
+
 		protected override void OnModelCreating(ModelBuilder builder)
 		{
 			base.OnModelCreating(builder);
