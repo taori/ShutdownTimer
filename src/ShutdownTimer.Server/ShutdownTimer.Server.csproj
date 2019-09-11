@@ -31,6 +31,8 @@
 		<PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="2.2.6" />
 		<PackageReference Include="Microsoft.Extensions.Logging.EventLog" Version="2.2.0" />
 		<PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.2.3" />
+		<PackageReference Include="NLog.Config" Version="4.6.5" />
+		<PackageReference Include="NLog.Web.AspNetCore" Version="4.8.5" />
 		<PackageReference Include="NSwag.AspNetCore" Version="13.0.6" />
 		<PackageReference Include="TagHelperSamples.Authorization" Version="2.0.49" />
 		<PackageReference Include="TagHelperSamples.Bootstrap" Version="2.0.49" />

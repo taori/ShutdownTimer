@@ -9,7 +9,10 @@ using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Logging;
+using NLog.Extensions.Logging;
+using NLog.Web;
 using ShutdownTimer.Server.Extensions;
 
 namespace ShutdownTimer.Server
@@ -19,29 +22,41 @@ namespace ShutdownTimer.Server
 		// https://docs.microsoft.com/de-de/aspnet/core/host-and-deploy/windows-service?view=aspnetcore-2.2&tabs=visual-studio
 		public static void Main(string[] args)
 		{
-			var isService = !(Debugger.IsAttached || args.Contains("--console"));
-
-			if (isService)
+			var logger = NLog.Web.NLogBuilder.ConfigureNLog("nlog.config").GetCurrentClassLogger();
+			try
 			{
-				var pathToExe = Process.GetCurrentProcess().MainModule.FileName;
-				var pathToContentRoot = Path.GetDirectoryName(pathToExe);
-				Directory.SetCurrentDirectory(pathToContentRoot);
+				var isService = !(Debugger.IsAttached || args.Contains("--console"));
+
+				if (isService)
+				{
+					var pathToExe = Process.GetCurrentProcess().MainModule.FileName;
+					var pathToContentRoot = Path.GetDirectoryName(pathToExe);
+					Directory.SetCurrentDirectory(pathToContentRoot);
+				}
+
+				var builder = CreateWebHostBuilder(args.Where(arg => arg != "--console").ToArray())
+					.UseKestrel();
+
+				var host = builder.Build();
+
+				if (isService)
+				{
+					// To run the app without the CustomWebHostService change the
+					// next line to host.RunAsService();
+					host.RunAsCustomService();
+				}
+				else
+				{
+					host.Run();
+				}
 			}
-
-			var builder = CreateWebHostBuilder(args.Where(arg => arg != "--console").ToArray())
-				.UseKestrel();
-
-			var host = builder.Build();
-
-			if (isService)
+			catch (Exception e)
 			{
-				// To run the app without the CustomWebHostService change the
-				// next line to host.RunAsService();
-				host.RunAsCustomService();
+				logger.Error(e, $"Stopped program because of an exception.");
 			}
-			else
+			finally
 			{
-				host.Run();
+				NLog.LogManager.Shutdown();
 			}
 		}
 
@@ -50,11 +65,15 @@ namespace ShutdownTimer.Server
 				.ConfigureLogging((hostingContext, logging) =>
 				{
 					logging.AddEventLog();
+					logging.AddNLog();
 				})
 				.ConfigureAppConfiguration((context, config) =>
 				{
 					// Configure the app here.
 				})
+				.UseKestrel()
+				.UseUrls("https://192.168.0.115:5301")
+				.UseNLog()
 				.UseStartup<Startup>();
 	}
 }
