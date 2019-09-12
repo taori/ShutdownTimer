@@ -72,7 +72,7 @@ namespace ShutdownTimer.Server
 					// Configure the app here.
 				})
 				.UseKestrel()
-				.UseUrls("https://192.168.0.115:5301")
+				.UseUrls("https://0.0.0.0:5301")
 				.UseNLog()
 				.UseStartup<Startup>();
 	}

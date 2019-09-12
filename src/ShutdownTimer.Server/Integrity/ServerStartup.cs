@@ -49,8 +49,11 @@ namespace ShutdownTimer.Server.Integrity
 			var admins = await userManager.GetUsersInRoleAsync(WellKnownRoleNames.Administrator);
 			if (admins.Count == 0)
 			{
-				var user = await userManager.Users.OrderBy(d => d.Created).FirstAsync();
-				await userManager.AddToRoleAsync(user, WellKnownRoleNames.Administrator);
+				if (userManager.Users.Any())
+				{
+					var user = await userManager.Users.OrderBy(d => d.Created).FirstAsync();
+					await userManager.AddToRoleAsync(user, WellKnownRoleNames.Administrator);
+				}
 			}
 		}
 
