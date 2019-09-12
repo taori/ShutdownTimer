@@ -69,10 +69,9 @@ namespace ShutdownTimer.Server
 				})
 				.ConfigureAppConfiguration((context, config) =>
 				{
-					// Configure the app here.
+					config.AddCommandLine(args);
 				})
 				.UseKestrel()
-//				.UseUrls("https://0.0.0.0:5301")
 				.UseNLog()
 				.UseStartup<Startup>();
 	}

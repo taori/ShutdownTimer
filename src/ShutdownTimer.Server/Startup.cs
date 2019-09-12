@@ -18,6 +18,7 @@ using ShutdownTimer.Server.Data;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using ShutdownTimer.Server.Abstraction;
+using ShutdownTimer.Server.Integrity;
 using ShutdownTimer.Server.Models;
 using ShutdownTimer.Server.Services;
 
@@ -43,6 +44,8 @@ namespace ShutdownTimer.Server
 				options.CheckConsentNeeded = context => true;
 				options.MinimumSameSitePolicy = SameSiteMode.None;
 			});
+			services.Configure<DatabaseFeatureSettings>(Configuration.GetSection("DatabaseFeatureSettings"));
+
 			services.AddScoped<IShutdownHistoryService, ShutdownHistoryService>();
 			services.AddScoped<ISystemControlService, SystemControlService>();
 			services.AddScoped<IOperationProvider, EnumOperationProvider>();
