@@ -56,20 +56,23 @@ namespace ShutdownTimer.Server
 			}
 			finally
 			{
+				System.Text.RegularExpressions.Regex
 				NLog.LogManager.Shutdown();
 			}
 		}
 
 		public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
 			WebHost.CreateDefaultBuilder(args)
+				.ConfigureAppConfiguration((context, config) =>
+				{
+					config.AddJsonFile("appsettings.postdeployment.json", true, true);
+					config.AddJsonFile("appsettings.{Environment}.postdeployment.json", true, true);
+					config.AddCommandLine(args);
+				})
 				.ConfigureLogging((hostingContext, logging) =>
 				{
 					logging.AddEventLog();
 					logging.AddNLog();
-				})
-				.ConfigureAppConfiguration((context, config) =>
-				{
-					config.AddCommandLine(args);
 				})
 				.UseKestrel()
 				.UseNLog()
